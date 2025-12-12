@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# ============================================
+# STAGING DEPLOYMENT SCRIPT
+# Live Auction Hub - Deploy to Staging
+# ============================================
+
+set -e  # Exit on error
+
+echo "🚀 Starting Staging Deployment Process"
+echo "======================================"
+echo ""
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Step 1: Check if EAS CLI is installed
+echo "📦 Checking EAS CLI installation..."
+if ! command -v eas &> /dev/null
+then
+    echo "${RED}❌ EAS CLI not found. Installing...${NC}"
+    npm install -g eas-cli
+else
+    echo "${GREEN}✅ EAS CLI is installed${NC}"
+fi
+
+# Step 2: Verify EAS login
+echo ""
+echo "🔐 Verifying EAS authentication..."
+if ! eas whoami &> /dev/null
+then
+    echo "${YELLOW}⚠️  Not logged in to EAS. Please log in:${NC}"
+    eas login
+else
+    CURRENT_USER=$(eas whoami 2>&1)
+    echo "${GREEN}✅ Authenticated as: ${CURRENT_USER}${NC}"
+fi
+
+# Step 3: Switch to staging environment
+echo ""
+echo "🔧 Switching to staging environment..."
+if [ -f .env.staging ]; then
+    cp .env.staging .env
+    echo "${GREEN}✅ Staging environment activated${NC}"
+else
+    echo "${RED}❌ .env.staging not found!${NC}"
+    echo "Please create .env.staging before deploying to staging."
+    exit 1
+fi
+
+# Step 4: Install dependencies
+echo ""
+echo "📦 Installing dependencies..."
+npm install
+echo "${GREEN}✅ Dependencies installed${NC}"
+
+# Step 5: Run pre-deployment checks
+echo ""
+echo "🔍 Running pre-deployment checks..."
+echo "   - TypeScript type checking..."
+npm run type-check || echo "${YELLOW}⚠️  Type check failed but continuing...${NC}"
+
+echo "   - Linting code..."
+npm run lint || echo "${YELLOW}⚠️  Linting found issues but continuing...${NC}"
+
+echo "${GREEN}✅ Pre-deployment checks completed${NC}"
+
+# Step 6: Build for staging
+echo ""
+echo "🏗️  Building application for staging..."
+echo "${YELLOW}Choose platform:${NC}"
+echo "  1) iOS"
+echo "  2) Android"
+echo "  3) Both (iOS + Android)"
+read -p "Enter choice [1-3]: " platform_choice
+
+case $platform_choice in
+    1)
+        echo ""
+        echo "${GREEN}Building for iOS (Staging)...${NC}"
+        eas build --profile staging --platform ios
+        ;;
+    2)
+        echo ""
+        echo "${GREEN}Building for Android (Staging)...${NC}"
+        eas build --profile staging --platform android
+        ;;
+    3)
+        echo ""
+        echo "${GREEN}Building for iOS + Android (Staging)...${NC}"
+        eas build --profile staging --platform all
+        ;;
+    *)
+        echo "${RED}Invalid choice. Exiting.${NC}"
+        exit 1
+        ;;
+esac
+
+# Step 7: Completion
+echo ""
+echo "======================================"
+echo "${GREEN}✅ Staging Deployment Completed!${NC}"
+echo "======================================"
+echo ""
+echo "📱 Next Steps:"
+echo "   1. Check build status: https://expo.dev"
+echo "   2. Download the build when ready"
+echo "   3. Distribute to QA team for testing"
+echo "   4. Monitor logs and analytics"
+echo ""
+echo "💡 Useful Commands:"
+echo "   - Check build list: eas build:list --profile staging"
+echo "   - View build details: eas build:view [build-id]"
+echo "   - Push OTA update: npm run update:staging"
+echo ""
