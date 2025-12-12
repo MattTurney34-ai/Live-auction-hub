@@ -1,34 +1,58 @@
-import { Stack } from "expo-router";
-import { PiPProvider } from "./contexts/PiPContext";
-import PiPVideo from "./components/PiPVideo";
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-// Polyfill fetch to prevent Supabase from trying to import @supabase/node-fetch
-// This is a no-op in React Native where fetch already exists
-if (typeof globalThis.fetch === 'undefined') {
-  // @ts-ignore
-  globalThis.fetch = fetch;
-}
-
-export default function RootLayout() {
+export default function TabLayout() {
   return (
-    <PiPProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#1a1a1a',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: '700',
-          },
-          contentStyle: {
-            backgroundColor: '#0a0a0a',
-          },
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: '#0066FF',
+        tabBarInactiveTintColor: '#666',
+        tabBarStyle: {
+          backgroundColor: '#1a1a1a',
+          borderTopColor: '#2a2a2a',
+        },
+        headerStyle: {
+          backgroundColor: '#1a1a1a',
+        },
+        headerTintColor: '#fff',
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Live',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="play-circle" size={size} color={color} />
+          ),
         }}
       />
-      <PiPVideo />
-    </PiPProvider>
+      <Tabs.Screen
+        name="browse"
+        options={{
+          title: 'Browse',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="grid" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Alerts',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="notifications" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
-
-
