@@ -1,3 +1,4 @@
+npm install -g eas-cli
 {
   "cli": {
     "version": ">= 5.2.0"
