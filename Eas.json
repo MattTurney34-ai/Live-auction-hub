@@ -1,0 +1,66 @@
+npm install -g eas-cli
+{
+  "cli": {
+    "version": ">= 5.2.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false,
+        "bundleIdentifier": "com.liveauctionhub.app"
+      }
+    },
+    "staging": {
+      "distribution": "internal",
+      "channel": "staging",
+      "ios": {
+        "bundleIdentifier": "com.liveauctionhub.app.staging",
+        "buildNumber": "1"
+      },
+      "env": {
+        "APP_ENV": "staging"
+      }
+    },
+    "production": {
+      "distribution": "store",
+      "channel": "production",
+      "ios": {
+        "bundleIdentifier": "com.liveauctionhub.app",
+        "buildNumber": "1",
+        "autoIncrement": true
+      },
+      "env": {
+        "APP_ENV": "production"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "<REDACTED - set via EAS secret or CI env (e.g. APPLE_ID)>",
+        "ascAppId": "<REDACTED - set via EAS secret or CI env (e.g. ASC_APP_ID)>",
+        "appleTeamId": "<REDACTED - set via EAS secret or CI env (e.g. APPLE_TEAM_ID)>",
+        "sku": "live-auction-hub-001",
+        "language": "en-US",
+        "companyName": "Live Auction Hub",
+        "appName": "Live Auction Hub"
+      }
+    },
+    "staging": {
+      "ios": {
+        "appleId": "<REDACTED - set via EAS secret or CI env (e.g. APPLE_ID)>",
+        "ascAppId": "<REDACTED - set via EAS secret or CI env (e.g. ASC_APP_ID)>",
+        "appleTeamId": "<REDACTED - set via EAS secret or CI env (e.g. APPLE_TEAM_ID)>",
+        "sku": "live-auction-hub-staging"
+      }
+    }
+  }
+}
