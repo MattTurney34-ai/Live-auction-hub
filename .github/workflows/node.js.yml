@@ -1,14 +1,4 @@
-   steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
-                - name: Bytebase Login
+      - - name: Bytebase Login
   # You may pin to the exact commit or the version.
   # uses: bytebase/login-action@3c2d2089d38cad435c7c00892204e7e5c7c4cba1
   uses: bytebase/login-action@v1.0.0
