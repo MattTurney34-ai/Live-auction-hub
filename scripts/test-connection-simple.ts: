@@ -1,0 +1,75 @@
+import { createClient } from '@supabase/supabase-js';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+console.log('🧪 Testing Supabase Connection...\n');
+
+async function testConnection() {
+  // 1. Configuration Check
+  console.log('1️⃣ Configuration Check: ');
+  console.log(`   URL: ${supabaseUrl || '❌ Missing'}`);
+  console.log(`   Key: ${supabaseKey ?  '✅ Present' : '❌ Missing'}\n`);
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('❌ Missing environment variables!');
+    console.log('\nCreate a .env file with:');
+    console.log('NEXT_PUBLIC_SUPABASE_URL=your-url');
+    console.log('NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key');
+    process.exit(1);
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // 2. Connection Test
+  console.log('2️⃣ Connection Test:');
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      console.log(`   Status: ⚠️  ${error.message}\n`);
+    } else {
+      console.log('   Status: ✅ Connected\n');
+    }
+  } catch (err:  any) {
+    console.log(`   Status: ❌ Error - ${err.message}\n`);
+  }
+
+  // 3. Tables Check
+  console.log('3️⃣ Checking Tables:');
+  
+  const tables = ['profiles', 'auctions', 'bids', 'watchlist', 'notifications'];
+  
+  for (const table of tables) {
+    try {
+      const { error } = await supabase
+        .from(table)
+        .select('id')
+        .limit(1);
+      
+      if (error) {
+        console.log(`   ${table}: ❌ ${error.message}`);
+      } else {
+        console.log(`   ${table}: ✅ Exists`);
+      }
+    } catch (err: any) {
+      console.log(`   ${table}: ❌ ${err.message}`);
+    }
+  }
+
+  console.log('\n✅ Connection tests completed!');
+}
+
+testConnection()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('❌ Test failed:', err);
+    process.exit(1);
+  });
