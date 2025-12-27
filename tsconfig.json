@@ -1,4 +1,4 @@
-{
+{{npx ts-node scripts/test-supabase-connection.ts
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
     "declaration": true,
@@ -17,4 +17,4 @@
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts"]
-}
+}}
