@@ -1,0 +1,24 @@
+{
+  "metadata" : {
+    "browser_name" : "Safari",
+    "browser_version" : "26.1",
+    "data_type" : "payment_cards",
+    "export_time_usec" : 1762023132323228,
+    "schema_version" : 1
+  },
+  "payment_cards" : [
+    {
+      "card_number" : "4031630429968018",
+      "card_name" : "Visa",
+      "cardholder_name" : "matthew turney",
+      "card_expiration_month" : 8,
+      "card_expiration_year" : 2030,
+      "card_last_used_time_usec" : 1762004725107168
+    },
+    {
+      "card_number" : "",
+      "card_name" : "Visa",
+      "card_last_used_time_usec" : 1762023132329387
+    }
+  ]
+}
