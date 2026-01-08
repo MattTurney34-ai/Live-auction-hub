@@ -1,0 +1,61 @@
+name: EAS Build & Submit (iOS)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs: 
+  build-and-submit-ios:
+    name: Build and submit iOS
+    runs-on: macos-latest
+    env: 
+      EAS_PROJECT_ID:  ${{ secrets.EAS_PROJECT_ID }}  # optional: if you use a project id
+      EAS_TOKEN: ${{ secrets. EAS_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name:  Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Install EAS CLI
+        run: |
+          npm install -g eas-cli
+
+      - name: Login to EAS (using token)
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+        run: |
+          echo "Using EAS_TOKEN from secrets"
+
+      - name: Build iOS (production)
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+        run: |
+          eas build --platform ios --profile production --non-interactive
+
+      - name: Submit to App Store (production)
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+          FASTLANE_SESSION: ${{ secrets. FASTLANE_SESSION }}   # optional: if you use fastlane session
+        run: |
+          eas submit --platform ios --profile production --non-interactive \
+            --apple-id "${{ secrets. APPLE_ID }}" \
+            --asc-app-id "${{ secrets.ASC_APP_ID }}" \
+            --apple-team-id "${{ secrets.APPLE_TEAM_ID }}"
+
+      - name: Upload build artifact (optional)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eas-build-metadata
+          path: |
+            eas-build-report.json
