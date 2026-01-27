@@ -1,0 +1,7 @@
+app/
+  _layout.tsx
+  index.tsx
+  browse.tsx
+  notifications.tsx
+  profile.tsx
+  [id].tsx
